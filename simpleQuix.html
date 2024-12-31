@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple Quiz App</title>
+         <!-- completed Successfully but a minor problem in the console -->
+    <style>
+        *{
+            padding:0;
+            margin:0;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            box-sizing: border-box;
+            color:#222;
+        }
+        body{
+            height:100vh;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            background-color: darkblue;
+        }
+        .app{
+            width: 90%;
+            max-width: 500px;
+            background-color: bisque;
+            padding: 20px;
+            border-radius: 10px;
+           
+        }
+        .description{
+            margin-bottom: 20px;
+            /* border-bottom: 2px dotted rgb(228, 140, 8); */
+            padding-bottom: 5px;
+            padding: 8px 16px;
+        }
+        #answerBtns{
+            display: flex;
+            flex-direction: column;
+            padding: 8px 16px;
+        }
+        button{
+            padding: 8px 16px;
+            margin-bottom: 2px;
+            border-radius: 5px;
+            border-style: solid;
+            text-align: left;
+        }
+        #question{
+            padding: 8px 16px;
+            color:#222;
+        }
+        button:hover:not([disabled]){
+            background-color: hsl(0, 5%, 20%);
+            transition: 0.9s;
+            color:#fff;
+        }
+        #next{
+           
+            left:30%;
+            /* background-color: aqua; */
+            width: 100%;
+             display: flex;
+             justify-content: center;
+
+        }
+        #nextbtn{
+              background-color: rgb(104, 163, 16);
+                margin: auto;
+               display:none; 
+              padding: 5px 20px;
+              border-radius: 8px;
+        }
+        .correct{
+            background-color: rgba(11, 155, 11, 0.479);
+        }
+        .incorrect{
+            background-color: rgba(212, 96, 80, 0.479);
+        }
+        address{
+          color:#888;
+          padding: 8px 16px;
+          font-weight: 200;
+        }
+        .adjust{
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          border-bottom: 2px dotted rgb(228, 140, 8);
+        }
+        strong{
+          color:#666;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="app">
+      <div class="adjust">
+        <h2 class="description">Simple Quiz </h2><span><address> Developed by <strong>Rasheed</strong></address></span>
+      </div>
+        
+          <div class="quiz-section">
+             <h3 id="question">This is first Question</h3>
+             <h4 id="last"></h4>
+             <div id="answerBtns">
+                <button #btn>Answer 1</button>
+                <button #btn>Answer 1</button>
+                <button #btn>Answer 1</button>
+                <button #btn>Answer 1</button>
+             </div>
+               
+                <button id="nextbtn"> Next  </button>
+               
+                
+          </div>
+    </div>
+
+    <script>
+      
+        const questions=[
+
+        { question:"Who is the Prime Minister of Pakistan?",
+                   answers:[
+                     {text:"Imran Khan", correct:false},
+                     {text:"Gul Khan", correct:false},
+                     {text:"Shahbaz Sharif ", correct:true},
+                     {text:"Asim Munir", correct:false},
+
+                   ]
+            },
+
+
+
+            { question:"Which is largest animal?",
+                   answers:[
+                     {text:"hen", correct:false},
+                     {text:"dog", correct:false},
+                     {text:"lion", correct:true},
+                     {text:"frog", correct:false},
+
+                   ]
+            },
+
+            { question:"Which is smallest animal?",
+                   answers:[
+                     {text:"hen", correct:true},
+                     {text:"dog", correct:false},
+                     {text:"lion", correct:false},
+                     {text:"frog", correct:false},
+
+                   ]
+            },
+
+            { question:"Capital of Germany?",
+                   answers:[
+                     {text:"Sydney", correct:false},
+                     {text:"Tokyo", correct:false},
+                     {text:"Berlin", correct:true},
+                     {text:"Peshawar", correct:false},
+
+                   ]
+            },
+
+
+        ];
+       
+        const questionElement=document.getElementById("question");
+        const answerBtn=document.getElementById("answerBtns");
+        const nextButton=document.getElementById("nextbtn");
+        let currentQusIndex=0;
+        let score=0;
+
+
+        function startQuiz()
+        {
+           
+            currentQusIndex=0;
+            score=0;
+
+            nextButton.innerHTML="Next";
+             
+            showQuestion();
+             
+        }
+        
+        function showQuestion()
+        {
+             resetState();
+             questionElement.style.color="#222";
+            let currentQuestion=questions[currentQusIndex];
+            let nexQuestion=currentQusIndex+1;
+             
+              if(nexQuestion > questions.length)
+              {
+                console.log("hi");
+                showscore();
+               
+                
+              }
+
+                questionElement.innerHTML=nexQuestion +"."+ currentQuestion.question;
+               
+
+                currentQuestion.answers.forEach( answer => {
+                let button=document.createElement('button');
+                button.innerHTML=answer.text;
+                button.classList.add('btn');
+                if(answer.correct)
+                {
+                    button.dataset.correct=answer.correct;
+                }
+                button.addEventListener("click", decision);
+                answerBtn.appendChild(button);
+                
+                });
+              
+                nextButton.style.display="none";
+            
+        }
+
+        function decision(e)
+        {
+            let selectedbtn=e.target;
+            const iscorrect=selectedbtn.dataset.correct==="true";
+            if(iscorrect)
+        {
+            selectedbtn.classList.add("correct");
+              selectedbtn.style.backgroundColor="rgba(11, 155, 11, 0.479)";
+              score++;
+            
+        }
+          else{
+            selectedbtn.classList.add("incorrect");
+              selectedbtn.style.backgroundColor="rgba(212, 40, 11, 0.479)";
+          }
+          Array.from(answerBtn.children).forEach(button=>{
+            if(button.dataset.correct==='true')
+          {
+            button.classList.add("correct");
+          }
+             button.disabled=true;
+          });
+          nextButton.style.display="block";
+        }
+              
+        //  function resetState()
+        //  {
+        //     nextButton.style.display='none';
+        //     while(answerBtn.firstChild())
+        //       {     there was a problem in this code
+        //        answerBtn.removeChild(answerBtn.firstChild());
+        //        }
+        //  }
+        function resetState() {
+      const questionElement = document.querySelector('h3#question');
+      const answerBtnsElement = document.querySelector('div#answerBtns');
+      if (questionElement) {
+        questionElement.textContent = ''; // Clear the question text
+      }
+      if (answerBtnsElement) {
+        answerBtnsElement.innerHTML = ''; // Clear the answer buttons
+      }
+    }
+
+    // Now you can call resetState() from anywhere in your code
+          
+         startQuiz();
+        
+         nextButton.addEventListener('click', ()=>
+        {
+            showQuestion();
+        })
+      
+        nextButton.addEventListener('click', ()=>
+        {
+            if(currentQusIndex < questions.length)
+        {
+          
+             handleNextBtn();
+        }
+          else{
+            startQuiz();
+          }
+        }
+           
+    );
+
+    function handleNextBtn()
+    {
+         currentQusIndex++;
+         if(currentQusIndex>=questions.length)
+         {
+          showscore();
+           
+         }
+         showQuestion();
+         
+    }
+
+    function showscore()
+     {     resetState(); 
+     // console.log(currentQuestion); 
+        nextButton.innerHTML="Play Again";
+       let last=document.getElementById('last');
+       questionElement.style.display="block";
+        questionElement.innerHTML="your score is "+ score + " out of " + currentQusIndex;
+        questionElement.style.color="green";
+       console.log(questionElement.innerHTML);
+        nextButton.style.display="block";
+      
+       
+    }
+    
+    </script>
+</body>
+</html>
